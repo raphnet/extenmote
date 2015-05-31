@@ -506,5 +506,37 @@ void dataToClassic(const gamepad_data *src, classic_pad_data *dst, char first_re
 			*/
 			break;
 #endif
+
+#ifdef WITH_DB9
+		case PAD_TYPE_SMS:
+			if (src->db9.buttons & DB9_BTN_DPAD_UP) { dst->buttons |= CPAD_BTN_DPAD_UP; }
+			if (src->db9.buttons & DB9_BTN_DPAD_DOWN) { dst->buttons |= CPAD_BTN_DPAD_DOWN; }
+			if (src->db9.buttons & DB9_BTN_DPAD_LEFT) { dst->buttons |= CPAD_BTN_DPAD_LEFT; }
+			if (src->db9.buttons & DB9_BTN_DPAD_RIGHT) { dst->buttons |= CPAD_BTN_DPAD_RIGHT; }
+
+			if (src->db9.buttons & DB9_BTN_1) { dst->buttons |= CPAD_BTN_B; }
+			if (src->db9.buttons & DB9_BTN_2) { dst->buttons |= CPAD_BTN_A; }
+			break;
+
+		case PAD_TYPE_MD:
+			if (src->db9.buttons & DB9_BTN_DPAD_UP) { dst->buttons |= CPAD_BTN_DPAD_UP; }
+			if (src->db9.buttons & DB9_BTN_DPAD_DOWN) { dst->buttons |= CPAD_BTN_DPAD_DOWN; }
+			if (src->db9.buttons & DB9_BTN_DPAD_LEFT) { dst->buttons |= CPAD_BTN_DPAD_LEFT; }
+			if (src->db9.buttons & DB9_BTN_DPAD_RIGHT) { dst->buttons |= CPAD_BTN_DPAD_RIGHT; }
+
+			if (src->db9.buttons & DB9_BTN_A) { dst->buttons |= CPAD_BTN_Y; }
+			if (src->db9.buttons & DB9_BTN_B) { dst->buttons |= CPAD_BTN_B; }
+			if (src->db9.buttons & DB9_BTN_C) { dst->buttons |= CPAD_BTN_A; }
+			if (src->db9.buttons & DB9_BTN_X) { dst->buttons |= CPAD_BTN_TRIG_LEFT; }
+			if (src->db9.buttons & DB9_BTN_Y) { dst->buttons |= CPAD_BTN_X; }
+			if (src->db9.buttons & DB9_BTN_Z) { dst->buttons |= CPAD_BTN_TRIG_RIGHT; }
+			if (src->db9.buttons & DB9_BTN_START) { dst->buttons |= CPAD_BTN_PLUS; }
+			if (src->db9.buttons & DB9_BTN_MODE) { dst->buttons |= CPAD_BTN_ZR; }
+
+			if (isTripleClick(src->db9.buttons & DB9_BTN_START)) {
+				dst->buttons |= CPAD_BTN_HOME;
+			}
+			break;
+#endif
 	}
 }
