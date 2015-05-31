@@ -1,0 +1,18 @@
+This program reads events from a linux joystick device and displays
+them in a human readable format.
+
+The A and B menu options are generic and can be used with any joystick.
+
+The C option is meant to be used with a raphnet.net wusbmote[1] adapter
+and an extenmote adapter[2]. If a different wii accessory to USB adapter
+is used, the button labels probably won't match.
+
+Here is an example setup I used it for QA when implementing mapping 
+changes:
+
+N64 controller -> extenmote -> wusbmote -> PC running maptest.
+
+
+
+[1]  http://www.raphnet.net/electronique/wusbmote/index_en.php
+[2]  http://www.raphnet.net/electronique/extenmote/index_en.php

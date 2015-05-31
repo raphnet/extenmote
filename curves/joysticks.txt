@@ -1,0 +1,54 @@
+--------------- N64 ----------------
+
+The range of values returned varies with brand and wear.
+
+***** Good Red N64 *****
+Horizontal: -82 to 79
+Vertical..: -85 to 83
+
+***** Good Aqua N64 *****
+Horizontal: -80 to 80
+Vertical..: -80 to 85
+
+***** Worn Grey N64 *****
+Horizontal: -75 to 75
+Vertical..: -80 to 77
+
+***** Light purple (Described as "some wear" on ebay) *****
+Horizontal: -72 to 80
+Vertical: -80 to 80
+
+***** Extremely Worn Yellow N64 ******
+Horizontal: -68 to 64
+Vertical..: -69 to 80
+
+***** Hori pad mini *****
+Horizontal: -100 to 100
+Vertical..: -100 to 100
+
+***** Unbranded immitation *****
+Horizontal: -88 to 87
+Vertical..: -90 to 95
+
+------------ WII CLASSIC -----------
+
+Horizontal: -24 to 24
+Vertical: -27 to 25
+
+Left trigger: 0x1c to 0x00 (not reliable)
+
+--------------- GAMECUBE ----------------
+Raw values from a gamecube controller. 
+Uncalibrated. The stick does not always
+rest at the same position so a small
+deadzone is required.
+
+***** Nintendo White japanese *****
+Horizontal: -106 to 96  (+/- 100.5)
+Vercial...: -112 to 96  (+/- 102)
+Observed resting positions:
+	-4. -8
+	-5, -9
+	-5, -8
+
+

@@ -1,0 +1,96 @@
+*** SNES / NES ***
+
+| SNES   | SNES        | NES    | Classic    |
+|        | (NES mode)  |        | Controller |
++--------+-------------+--------+------------+
+| D-Pad  | D-Pad       | D-Pad  | D-Pad      |
+| Start  | Start       | Start  | +          |
+| Select | Select      | Select | -          |
+| A      | B           | A      | A          |
+| B      | Y           | B      | B          |
+| X      |             |        | X          |
+| Y      |             |        | Y          |
+| L      |             |        | L          |
+| R      |             |        | R          |
+
+When using an SNES controller:
+ - NES mode is enabled by pressing START+SELECT+L+R+D-Down
+ - SNES analog mode is enabled by pression START+SELECT+L+R+D-Left
+ - SNES mode is restaured by pressing START+SELECT+L+R+D-Up
+
+Special:
+ - Disabling mapping combos: Hold Start when connecting the N64 controller (or powering up the wiimote)
+
+*** N64 ***
+
+| N64       | Mapping 0  | Mapping 1  | Mapping 2  | Mapping 3  | Mapping 4  | Mapping 5  | Mapping6  | Mapping 7  |
++-----------+------------+------------+------------+------------+------------+------------+-----------+------------+
+| A         | A          | A          | A          | A          | A          | A          | A         | A          |
+| B         | B          | B          | B          | B          | B          | B          | B         | B          |
+| Start     | +          | +          | +          | +          | +          | +          | +         | +          |
+| L         | L          | ZL + ZR    | D-Pad down | D-Pad down | ZL + ZR    | L          | D-right   | ZL + ZR    |
+| R         | R          | R          | R          | ZL + ZR    | R          | R          | R         | R          |
+| Z         | ZR + ZL    | L          | L          | L + R      | L          | L          | L         | X + Y      |
+| D-up      | D-up       | D-up       | D-up       | D-up       | D-up       | D-up       | D-up      | D-up       |
+| D-down    | D-down     | D-down     | D-down     | D-down     | D-down     | D-down     | D-down    | D-down     |
+| D-left    | D-left     | D-left     | D-left     | D-left     | D-left     | D-left     | D-left    | D-left     |
+| D-right   | D-right    | D-right    | D-right    | D-right    | D-right    | D-right    | D-right   | D-right    |
+| C-up      | C-up       | C-up       | C-up       | C-up       | N/A        | C-up       | N/A       | C-up       |
+| C-down    | C-down     | C-down     | C-down     | C-down + X | N/A        | C-down     | X         | C-down     |
+| C-left    | C-left     | C-left     | C-left     | C-left + Y | Y          | C-left     | Y         | C-left     |
+| C-right   | C-right    | C-right    | C-right    | C-right    | X          | C-right    | ZL + ZR   | C-right    |
+
+|  Name    | Activation     | Games                                                                                |
++----------+----------------+--------------------------------------------------------------------------------------+
+Mapping 0  | L+R+Z+D-up     | Mario 64, Kirby 64, Mario Tennis 64, Bomberman hero, Mario Golf, Pokemon Puzzle League
+Mapping 1  | L+R+Z+D-down   | Mario Kart 64, Mario Kart Wii, Mario Party 2, Cruisn' USA, Wave race 64, Custom robo v2
+Mapping 2  | L+R+Z+D-left   | Zelda Ocarina of time, Paper Mario
+Mapping 3  | L+R+Z+D-right  | Super smash bros
+Mapping 4  | L+R+Z+C-up     | Sin and punishment.
+Mapping 5  | L+R+Z+C-down   | Ogre Battle 64, 1080° Snowboarding, Pokemon snap, Starfox 64
+Mapping 6  | L+R+Z+C-left   | F-Zero X
+Mapping 7  | L+R+Z+C-right  | Yoshi's story
+
+Special:
+ - Disabling mapping combos: Hold Start when connecting the N64 controller (or powering up the wiimote)
+
+
+*** GAMECUBE ***
+
+| Gamecube  | Mapping 0 | Mapping 1 | Mapping 2 | Mapping 3 | Mapping 4 | Mapping 5 |
++-----------+-----------+-----------+-----------+-----------+-----------+-----------+
+| A         | A         | B         | A         | ZR        | B         | A         |
+| B         | B         | Y         | B         | A         | Y         | X         |
+| X         | X         | A         | X         | B         | A         | R         |
+| Y         | Y         | X         | Y         | X         | X         | B         |
+| L         | L         | L         | ZL        | ZL        | L         | ZL        |
+| R         | R         | R         | ZR        | Y         | R         | ZR        |
+| Z         | ZL & ZR   | (-)       | R         | B         | Zr        | (-)       |
+| Dpad      | Dpad      | Dpad      | Dpad      | Dpad      | Dpad      | Dpad      |
+| Stick     | Stick     | Stick     | Stick     | Stick     | Stick     | Stick     |
+| C-Stick   | C-Stick   | C-Stick   | C-stick   | C-stick   | C-stick   | C-stick   |
+
+| ID | Activation           | Games            
++----+----------------------+--------------------------------------------------
+| 0  | A+B+X+Y+Dpad-Haut    | Mario Kart Wii
+| 1  | A+B+X+Y+Dpad-Bas	    | Jeux Virtual Console SNES
+| 2  | A+B+X+Y+Dpad-Gauche  | Suggestion for better support of Sonic & All-Stars transformed for the Wii U and probably other games.
+| 3  | A+B+X+Y+Dpad-Droite  | Suggestion for better support of Sonic & All-Stars transformed for the Wii U and probably other games.
+| 4  | A+B+X+Y+Z+C-Left     | For Devolution
+| 5  | A+B+X+Y+Z+C-Right    | For Super Mario 3D World
+
+Special:
+ - Home button combo: A+B+Y+X+Z+C-Down
+ - Disabling mapping combos: Hold Start when connecting the gamecube controller (or powering up the wiimote)
+
+
+Sonic & All stars transformed for the wii U:
+
+- In game
+Zr: Gas
+Zl: Break / reverse
+Y: Rear view
+A: Exchage item
+B: Use item
+Left joystick: Steering
+Right joystick: ?

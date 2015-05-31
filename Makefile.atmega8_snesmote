@@ -1,0 +1,57 @@
+CC=avr-gcc
+AS=$(CC)
+LD=$(CC)
+
+PROGNAME=atmega8_snesmote
+OBJDIR=objs-$(PROGNAME)
+CPU=atmega8
+CFLAGS=-Wall -mmcu=$(CPU) -DF_CPU=8000000L -Os -DWITH_SNES
+LDFLAGS=-mmcu=$(CPU) -Wl,-Map=$(PROGNAME).map
+HEXFILE=$(PROGNAME).hex
+AVRDUDE=avrdude -p m8 -P usb -c avrispmkII
+
+# RSTDISBL  WDTON  SPIEN  CKOPT  EESAVE  BOOTSZ1  BOOTSZ0  BOOTRST
+#    1        1      0      1      1        0        0        1
+HFUSE=0xd9
+#
+# BODLEVEL  BODEN  SUT1  SUT0  CKSEL3  CKSEL2  CKSEL1  CKSEL0
+#    1        1      1    0      0       1       0       0
+#
+# 8mhz internal RC oscillator (Ok for NES/SNES only mode)
+LFUSE=0xE4
+
+OBJS=$(addprefix $(OBJDIR)/, main.o wiimote.o snes.o tripleclick.o classic.o eeprom.o)
+
+all: $(HEXFILE)
+
+clean:
+	rm -f $(PROGNAME).elf $(PROGNAME).hex $(PROGNAME).map $(OBJS)
+
+$(OBJDIR)/%.o: %.S
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJDIR)/%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJDIR)/%.o: %.c %.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(PROGNAME).elf: $(OBJS)
+	$(LD) $(OBJS) $(LDFLAGS) -o $(PROGNAME).elf
+
+$(PROGNAME).hex: $(PROGNAME).elf
+	avr-objcopy -j .data -j .text -O ihex $(PROGNAME).elf $(PROGNAME).hex
+	avr-size $(PROGNAME).elf
+
+fuse:
+	$(AVRDUDE) -e -Uhfuse:w:$(HFUSE):m -Ulfuse:w:$(LFUSE):m -B 20.0 -F
+
+flash: $(HEXFILE)
+	$(AVRDUDE) -Uflash:w:$(HEXFILE) -B 1.0 -F
+
+chip_erase:
+	$(AVRDUDE) -e -B 1.0 -F
+
+reset:
+	$(AVRDUDE) -B 1.0 -F
+	

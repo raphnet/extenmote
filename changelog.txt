@@ -1,0 +1,97 @@
+-v1.9.8
+ - Compilation fix for new AVR LIBC (Atmega168a vs. Atmega168 sleep registers)
+
+-v1.9.7
+ L/R analogic sliders fix and improvements:
+   - N64/SNES: Simulate full L/R analogic deflection when L/R are pressed.
+   - Gamecube: Fix L/R analog sliders support (broken since 1.9!)
+
+-v1.9.6
+ - Fix NES/SNES controller support (was broken in v1.9.5)
+
+-v1.9.5
+ - New Gamecube button mapping
+ - Triple click on START button now triggers the HOME button (SNES/NES/GC/N64)
+ - Prevent a 8 bit overflow from occuring with some cheap controller clones.
+   Fixes the "joystick left/down direction does not work" problem, but keep
+   in mind the overall quality of the controller won't increase. It will
+   work as bad as it does on a real N64.
+ - Fix N64/Gamecube communication timing
+ - Fix eeprom init bug (Last mapping not saved)
+ - Improved controller auto-detection
+
+-v1.9 -- Improved raw data feature
+ - Added raw data for SNES and NES controllers
+ - Implemented a special mode where the extension ID changes with the
+   connected controller.
+ - Modified GC/N64 raw data feature to includes the button data too and
+   to be exactly in the format received from the controller.
+Technical details here: http://www.raphnet.net/programmation/extenmote_raw/index_en.php
+
+-v1.8
+ - [GC/N64] Raw analog data and a signature is now appended to the standard
+   classic controller report structure. Software that is aware of this
+   will be able to use the full resolution of the original joysticks.
+
+-v1.7
+ - [GC] Added a gamecube mappings (for Devolution)
+ - [GC] Added a gamecube button combination to trigger the home button (A+B+Y+X+Z+C-Down)
+ - [GC] Implemented gamecube L and R sliders
+ - [GC/N64] Holding start when connecting the controller (or powering up)
+   disables the button mapping combos for the session.
+
+-v1.6
+ - Add two N64 mappings for F-Zero X and Yoshi's Story
+ - Add a tool I use for QA (Requires Linux and a wusbmote adapter)
+ - The N64 Default curve (1.5) was not really active by default. L+R+Z+A had
+   to be explicitely pressed. (now fixed)
+ - Fix calibartion data for libOGC (Fixes wii64 and probably others)
+ - N64: When mapping 0 is active, pressing the four C buttons + Dpad left + Z
+   sends X+Y pressed status (for wii64 menu)
+
+-v1.5
+ - New v1.5 default curve (much better in Zelda)
+ - When switching from the Wii menu to a game, the adapter does not
+   have to be reconnected anymore.
+ - Fixed the 'always scrolling' bug that occured in the Wii U main menu (Wii
+   menu was ok)
+ - Removed the old v1.1 curve
+
+-v1.4.1
+ - Use the configured N64 curve for real
+
+-v1.4
+ - Implemented a better Gamecube conversion curves
+ - Added two gamecube mappings
+ - Two N64 transfer curves now available (the default works better with
+ normally worn controllers)\
+ - The adapter now remembers and restores the last settings that have been
+ used.
+
+-v1.3
+ - Implemented a new gamecube mapping to help SNES games
+ - Finished Gamecube C stick implementation.
+ (Gamecube L/R analog part still not implemented. I need a game
+ that uses it to test)
+
+-v1.2
+ - PORTD4 must be kept high for low power consumption on builds using the
+ multiuse PCB2:
+ (http://www.raphnet.net/electronique/multiuse_pcb2/index_en.php)
+
+-v1.1
+ - Use a reverse lookup table for the N64 to VC transfer function
+
+-v1.0
+
+Supported:
+ - N64 support with 6 mappings
+ - SNES support with 3 mappings: Tested SNS-005
+ - NES controller support: Tested Standard controllers (NES-004), NES MAX (NES-027)
+ - Tested with several NES, SNES and N64 virtual console titles as well as
+   Mario Kart Wii.
+
+Known issues:
+ - Some NES controllers won't work due to the 3.3v supply
+   (ex: NES Advantage)
+ - Gamecube support incomplete (missing analogic L/R sliders)
