@@ -1,5 +1,5 @@
 /*  Extenmote : NES, SNES, N64 and Gamecube to Wii remote adapter firmware
- *  Copyright (C) 2012  Raphael Assenat <raph@raphnet.net>
+ *  Copyright (C) 2012-2015  Raphael Assenat <raph@raphnet.net>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,11 +23,14 @@
 #define PAD_TYPE_NES		3
 #define PAD_TYPE_N64		4
 #define PAD_TYPE_GAMECUBE	5
+#define PAD_TYPE_MD			6
+#define PAD_TYPE_SMS		7
 
 #define NES_RAW_SIZE		1
 #define SNES_RAW_SIZE		2
 #define N64_RAW_SIZE		4
 #define GC_RAW_SIZE			8
+#define DB9_RAW_SIZE		2
 #define RAW_SIZE_MAX		GC_RAW_SIZE
 
 /* Big thanks to the authors of 
@@ -158,6 +161,30 @@ typedef struct _gc_pad_data {
 
 #define GC_ALL_BUTTONS		(GC_BTN_START|GC_BTN_Y|GC_BTN_X|GC_BTN_B|GC_BTN_A|GC_BTN_L|GC_BTN_R|GC_BTN_Z|GC_BTN_DPAD_UP|GC_BTN_DPAD_DOWN|GC_BTN_DPAD_RIGHT|GC_BTN_DPAD_LEFT)
 
+typedef struct _db9_pad_data {
+	unsigned char pad_type; // PAD_TYPE_MD or PAD_TYPE_SMS
+	unsigned short buttons;
+	unsigned char raw_data[DB9_RAW_SIZE];
+} db9_pad_data;
+
+#define DB9_BTN_DPAD_UP		0x0001
+#define DB9_BTN_DPAD_DOWN	0x0002
+#define DB9_BTN_DPAD_LEFT	0x0004
+#define DB9_BTN_DPAD_RIGHT	0x0008
+
+#define DB9_BTN_1			0x0010
+#define DB9_BTN_B			0x0010
+
+#define DB9_BTN_2			0x0020
+#define DB9_BTN_C			0x0020
+
+#define DB9_BTN_A			0x0040
+#define DB9_BTN_X			0x0080
+#define DB9_BTN_Y			0x0100
+#define DB9_BTN_Z			0x0200
+#define DB9_BTN_START		0x0400
+#define DB9_BTN_MODE		0x0800
+
 typedef struct _gamepad_data {
 	union {
 		unsigned char pad_type; // PAD_TYPE_*
@@ -166,6 +193,7 @@ typedef struct _gamepad_data {
 		nes_pad_data nes;
 		n64_pad_data n64;
 		gc_pad_data gc;
+		db9_pad_data db9;
 	};
 } gamepad_data;
 
@@ -176,7 +204,7 @@ typedef struct {
 	char (*changed)(void);
 	void (*getReport)(gamepad_data *dst);
 	void (*setVibration)(int value);
-	char (*probe)(void);	
+	char (*probe)(void);
 } Gamepad;
 
 #define IS_SIMULTANEOUS(x,mask)	(((x)&(mask)) == (mask))
