@@ -1,4 +1,5 @@
--v1.9.8
+-v2.0.0
+ - Add support for Megadrive and SMS controllers
  - Compilation fix for new AVR LIBC (Atmega168a vs. Atmega168 sleep registers)
 
 -v1.9.7
