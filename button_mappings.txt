@@ -94,3 +94,21 @@ A: Exchage item
 B: Use item
 Left joystick: Steering
 Right joystick: ?
+
+*** Megadrive/Genesis and SMS ***
+
+| SMS    | Megadrive   | Classic    |
+|        |             | Controller |
++--------+-------------+------------+
+| D-Pad  | D-Pad       | D-Pad      |
+|        | Start       | +          |
+|        |             | -          |
+| 2      | C           | A          |
+| 1      | B           | B          |
+|        | Y           | X          |
+|        | A           | Y          |
+|        | X           | L          |
+|        | Z           | R          |
+|        | Mode        | Zr         |
+
+
