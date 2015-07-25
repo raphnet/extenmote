@@ -68,7 +68,7 @@ static void hwInit(void)
 	 * 3: out0
 	 * 4: out1 // Tied to VCC on Multiuse PCB2 for routing reasons
 	 * 5: out0
-	 * 6: in-pu // Pulled to GND on mutluse db9 v3
+	 * 6: in-pu // Pulled to GND on mutluse db9 v3. Wired to VCC on multiuse PCB2.
 	 * 7: out0
 	 */
 	PORTD = 0x60;
