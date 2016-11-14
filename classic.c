@@ -59,10 +59,12 @@
  * Writing at byte 6 might one day control the rumble motor. Rumbles on when non-zero.
  */
 
-void pack_classic_data(classic_pad_data *src, unsigned char dst[15], int analog_style)
+void pack_classic_data(classic_pad_data *src, unsigned char dst[PACKED_CLASSIC_DATA_SIZE], int analog_style)
 {
 	unsigned char rx,ry,lx=0x20,ly=0x20; // down sized
 	unsigned char shoulder_left=0, shoulder_right=0; // lower 5 bits only
+
+	memset(dst, 0x00, PACKED_CLASSIC_DATA_SIZE);
 
 	if (analog_style == ANALOG_STYLE_N64)
 	{
