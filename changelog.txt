@@ -1,3 +1,6 @@
+-v2.1.0
+ - Add new classic controller reporting modes (Fixes the NES Classic Edition)
+
 -v2.0.0
  - Add support for Megadrive and SMS controllers
  - Compilation fix for new AVR LIBC (Atmega168a vs. Atmega168 sleep registers)
