@@ -231,7 +231,7 @@ int main(void)
 #endif
 
 	dataToClassic(NULL, &classicData, 0);
-	pack_classic_data(&classicData, current_report, ANALOG_STYLE_DEFAULT);
+	pack_classic_data(&classicData, current_report, ANALOG_STYLE_DEFAULT, CLASSIC_MODE_1);
 
 	if (!db9_mode) {
 		do_earlyDetection();
@@ -338,11 +338,21 @@ int main(void)
 
 		if (!wm_altIdEnabled())
 		{
+			unsigned char mode;
+
+			switch(wm_getReg(0xFE))
+			{
+				default:
+				case 0x01: mode = CLASSIC_MODE_1; break;
+				case 0x03: mode = CLASSIC_MODE_3; break;
+				case 0x02: mode = CLASSIC_MODE_2; break;
+			}
+
 			dataToClassic(&lastReadData, &classicData, first_controller_read);
 			if (first_controller_read > 2) {
 				first_controller_read = 0;
 			}
-			pack_classic_data(&classicData, current_report, analog_style);
+			pack_classic_data(&classicData, current_report, analog_style, mode);
 			wm_newaction(current_report, PACKED_CLASSIC_DATA_SIZE);
 		}
 		else

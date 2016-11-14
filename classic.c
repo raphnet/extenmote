@@ -58,8 +58,7 @@
  *
  * Writing at byte 6 might one day control the rumble motor. Rumbles on when non-zero.
  */
-
-void pack_classic_data(classic_pad_data *src, unsigned char dst[PACKED_CLASSIC_DATA_SIZE], int analog_style)
+void pack_classic_data_mode1(classic_pad_data *src, unsigned char dst[PACKED_CLASSIC_DATA_SIZE], int analog_style)
 {
 	unsigned char rx,ry,lx=0x20,ly=0x20; // down sized
 	unsigned char shoulder_left=0, shoulder_right=0; // lower 5 bits only
@@ -107,6 +106,74 @@ void pack_classic_data(classic_pad_data *src, unsigned char dst[PACKED_CLASSIC_D
 	memcpy(dst+7, src->controller_id, 2);
 	memcpy(dst+9, src->controller_raw_data, 8);
 }
+
+void pack_classic_data_mode2(classic_pad_data *src, unsigned char dst[PACKED_CLASSIC_DATA_SIZE], int analog_style)
+{
+	unsigned char rx=0x80,ry=0x80,lx=0x80,ly=0x80;
+	unsigned char shoulder_left=0, shoulder_right=0;
+
+	memset(dst, 0x00, PACKED_CLASSIC_DATA_SIZE);
+
+	lx = 0x80 + src->lx;
+	ly = 0x80 + src->ly;
+	rx = 0x80 + src->rx;
+	ry = 0x80 + src->ry;
+	shoulder_left = src->lt;
+	shoulder_right = src->rt;
+
+	dst[0] = lx;
+	dst[1] = rx;
+	dst[2] = ly;
+	dst[3] = ry;
+	dst[4] = 0; // I think this can hold extra bits for the axes
+	dst[5] = shoulder_left;
+	dst[6] = shoulder_right;
+	dst[7] = (src->buttons >> 8) ^ 0xFF;
+	dst[8] = (src->buttons) ^ 0xFF;
+}
+
+void pack_classic_data_mode3(classic_pad_data *src, unsigned char dst[PACKED_CLASSIC_DATA_SIZE], int analog_style)
+{
+	unsigned char rx=0x80,ry=0x80,lx=0x80,ly=0x80;
+	unsigned char shoulder_left=0, shoulder_right=0;
+
+	memset(dst, 0x00, PACKED_CLASSIC_DATA_SIZE);
+
+	lx = 0x80 + src->lx;
+	ly = 0x80 + src->ly;
+	rx = 0x80 + src->rx;
+	ry = 0x80 + src->ry;
+
+	shoulder_left = src->lt;
+	shoulder_right = src->rt;
+
+	dst[0] = lx;
+	dst[1] = rx;
+	dst[2] = ly;
+	dst[3] = ry;
+	dst[4] = shoulder_left;
+	dst[5] = shoulder_right;
+	dst[6] = (src->buttons >> 8) ^ 0xFF;
+	dst[7] = (src->buttons) ^ 0xFF;
+}
+
+
+void pack_classic_data(classic_pad_data *src, unsigned char dst[PACKED_CLASSIC_DATA_SIZE], int analog_style, int mode)
+{
+	switch (mode)
+	{
+		default:
+		case CLASSIC_MODE_1:
+			pack_classic_data_mode1(src, dst, analog_style);
+			break;
+		case CLASSIC_MODE_2:
+			break;
+		case CLASSIC_MODE_3:
+			pack_classic_data_mode3(src, dst, analog_style);
+			break;
+	}
+}
+
 
 void dataToClassic(const gamepad_data *src, classic_pad_data *dst, char first_read)
 {
