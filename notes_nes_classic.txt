@@ -1,0 +1,83 @@
+Here is the initial data exchange with controllers connected to a NES Classic Edition:
+
+1 52(W)  [0]			<< Set address (used to poll unresponding controller)
+2 52(W)  [2] f0 55		<< disable encryption step one
+3 52(W)  [2] fb 00 		<< disable encryption step two
+4 52(W)  [2] fe 03      << what's that? writing to the extension id eh?
+5 52(W)  [1] fa 		<< extension id
+6 52(R)  [6] 01 00 a4 20 03 01
+
+Normal polling:
+
+7 52(W)  [1] 00  << Set address to 0
+8 52(R)  [21] 83 85 85 85 00 00 ff ff 00 00 00 00 00 00 00 00 00 00 00 00 00
+               0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
+
+Buttons are at bits 6 and 7! This is not as documented:
+http://wiibrew.org/wiki/Wiimote/Extension_Controllers/Classic_Controller
+
+ 	Bit
+	Byte	7	6	5	4	3	2	1	0
+	0	RX<4:3>	LX<5:0>
+	1	RX<2:1>	LY<5:0>
+	2	RX<0>	LT<4:3>	RY<4:0>
+	3	LT<2:0>	RT<4:0>
+	4	BDR	BDD	BLT	B-	BH	B+	BRT	1
+	5	BZL	BB	BY	BA	BX	BZR	BDL	BDU
+
+Rather, the following new (high precision!) format is used:
+
+Bit    7    6    5    4    3    2    1    0
+Byte
+0      LX<7:0>
+1      RX<7:0>
+2      LY<7:0>
+3      RY<7:0>
+4      LT<7:0>
+5      RT<7:0>
+6      BDR  BDD  BLT  B-   BH   B+   BRT  1
+7      BZL  BB   BY   BA   BX   BZR  BDL  BDU
+
+---------------------
+
+So it's possible to write to extension ID bytes and change the controller behaviour? Let's
+play around with this..
+
+Classic controller PRO reports with various values written at 0xFE:
+
+FE -> 0x00 : a1 1d 0f 00 ff ff 00 00 00 00 00 00 00 00 00 00 00 00 00 00 07
+FE -> 0x01 : a1 1d 0f 00 ff ff 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0f
+
+FE -> 0x02 : 85 82 76 79 09 00 00 ff ff 00 00 00 00 00 00 00 00 00 00 00 00
+
+FE -> 0x03 : 85 82 76 79 00 00 ff ff 00 00 00 00 00 00 00 00 00 00 00 00 07
+
+FE -> 0x04 : a1 1d 0f 00 ff ff 00 00 00 00 00 00 00 00 00 00 00 00 00 00 07
+FE -> 0x05 : a1 1d 0f 00 ff ff 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+FE -> 0x06 : a1 1d 0f 00 ff ff 00 00 00 00 00 00 00 00 00 00 00 00 00 00 07
+FE -> 0x07 : a1 1d 0f 00 ff ff 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0f
+
+Same thing with a Classic controller (not pro):
+
+FE -> 0x01 : a0 1f 10 43 ff ff 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+FE -> 0x02 : 82 82 7e 81 0b 13 1a ff ff 00 00 00 00 00 00 00 00 00 00 00 00
+FE -> 0x03 : 82 7e 81 13 1a ff ff 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+So values 2 and 3 are interesting. 3 gives the "high precision" format mentionned above. But
+value 2 adds one byte before the analog triggers... This extra byte seems to
+be additional precision bits for the joysticks. But on my test setup, those are too
+noisy and I can't tell which bit is which. Better ignore these (if reading from a controller)
+or fix them to zero (if emulating a controller) until more is known...
+
+Bit    7    6    5    4    3    2    1    0
+Byte
+0      LX<7:0>
+1      RX<7:0>
+2      LY<7:0>
+3      RY<7:0>
+4      LX/RX/LY/RY extra bits (unknown distribution)
+5      LT<7:0>
+6      RT<7:0>
+7      BDR  BDD  BLT  B-   BH   B+   BRT  1
+8      BZL  BB   BY   BA   BX   BZR  BDL  BDU
+
