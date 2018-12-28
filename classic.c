@@ -114,8 +114,16 @@ void pack_classic_data_mode2(classic_pad_data *src, unsigned char dst[PACKED_CLA
 
 	memset(dst, 0x00, PACKED_CLASSIC_DATA_SIZE);
 
-	lx = 0x80 + src->lx;
-	ly = 0x80 + src->ly;
+
+	if (analog_style == ANALOG_STYLE_N64) {
+		// Classic controllers in this mode return -100 to +100
+		// N64 controllers are -80 to +80
+		lx = 0x80 + (src->lx * 128 / 100);
+		ly = 0x80 + (src->ly * 128 / 100);
+	} else {
+		lx = 0x80 + src->lx;
+		ly = 0x80 + src->ly;
+	}
 	rx = 0x80 + src->rx;
 	ry = 0x80 + src->ry;
 	shoulder_left = src->lt;
@@ -139,8 +147,15 @@ void pack_classic_data_mode3(classic_pad_data *src, unsigned char dst[PACKED_CLA
 
 	memset(dst, 0x00, PACKED_CLASSIC_DATA_SIZE);
 
-	lx = 0x80 + src->lx;
-	ly = 0x80 + src->ly;
+	if (analog_style == ANALOG_STYLE_N64) {
+		// Classic controllers in this mode return -100 to +100
+		// N64 controllers are -80 to +80
+		lx = 0x80 + (src->lx * 128 / 100);
+		ly = 0x80 + (src->ly * 128 / 100);
+	} else {
+		lx = 0x80 + src->lx;
+		ly = 0x80 + src->ly;
+	}
 	rx = 0x80 + src->rx;
 	ry = 0x80 + src->ry;
 
