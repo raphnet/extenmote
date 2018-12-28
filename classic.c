@@ -116,10 +116,16 @@ void pack_classic_data_mode2(classic_pad_data *src, unsigned char dst[PACKED_CLA
 
 
 	if (analog_style == ANALOG_STYLE_N64) {
-		// Classic controllers in this mode return -100 to +100
-		// N64 controllers are -80 to +80
-		lx = 0x80 + (src->lx * 128 / 100);
-		ly = 0x80 + (src->ly * 128 / 100);
+		// Provide a way to get the old 2.1.0 direct translation
+		if (g_current_config.g_n64_curve_id == RLUT_V1_4) {
+			lx = 0x80 + src->lx;
+			ly = 0x80 + src->ly;
+		} else {
+			// Classic controllers in this mode return -100 to +100
+			// N64 controllers are -80 to +80
+			lx = 0x80 + (src->lx * 128 / 95);
+			ly = 0x80 + (src->ly * 128 / 95);
+		}
 	} else {
 		lx = 0x80 + src->lx;
 		ly = 0x80 + src->ly;
@@ -148,10 +154,17 @@ void pack_classic_data_mode3(classic_pad_data *src, unsigned char dst[PACKED_CLA
 	memset(dst, 0x00, PACKED_CLASSIC_DATA_SIZE);
 
 	if (analog_style == ANALOG_STYLE_N64) {
-		// Classic controllers in this mode return -100 to +100
-		// N64 controllers are -80 to +80
-		lx = 0x80 + (src->lx * 128 / 100);
-		ly = 0x80 + (src->ly * 128 / 100);
+		// Provide a way to get the old 2.1.0 direct translation
+		if (g_current_config.g_n64_curve_id == RLUT_V1_4) {
+			lx = 0x80 + src->lx;
+			ly = 0x80 + src->ly;
+		}
+		else {
+			// Classic controllers in this mode return -100 to +100
+			// N64 controllers are -80 to +80, but +/- 75 is typical
+			lx = 0x80 + (src->lx * 128 / 95);
+			ly = 0x80 + (src->ly * 128 / 95);
+		}
 	} else {
 		lx = 0x80 + src->lx;
 		ly = 0x80 + src->ly;
@@ -182,6 +195,7 @@ void pack_classic_data(classic_pad_data *src, unsigned char dst[PACKED_CLASSIC_D
 			pack_classic_data_mode1(src, dst, analog_style);
 			break;
 		case CLASSIC_MODE_2:
+			pack_classic_data_mode2(src, dst, analog_style);
 			break;
 		case CLASSIC_MODE_3:
 			pack_classic_data_mode3(src, dst, analog_style);
@@ -450,9 +464,11 @@ void dataToClassic(const gamepad_data *src, classic_pad_data *dst, char first_re
 			// Curves
 			if (!disable_config) {
 				if (IS_SIMULTANEOUS(src->n64.buttons,  N64_BTN_L|N64_BTN_R|N64_BTN_Z|N64_BTN_A)) {
+					// Default
 					g_current_config.g_n64_curve_id = RLUT_V1_5;
 					sync_config();
 				} else if (IS_SIMULTANEOUS(src->n64.buttons,  N64_BTN_L|N64_BTN_R|N64_BTN_Z|N64_BTN_B)) {
+					// Alternate
 					g_current_config.g_n64_curve_id = RLUT_V1_4;
 					sync_config();
 				}
