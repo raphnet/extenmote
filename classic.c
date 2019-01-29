@@ -207,6 +207,19 @@ void pack_classic_data(classic_pad_data *src, unsigned char dst[PACKED_CLASSIC_D
 void dataToClassic(const gamepad_data *src, classic_pad_data *dst, char first_read)
 {
 	static char test_x = 0, test_y = 0;
+	unsigned short buttons_zl_zr = CPAD_BTN_ZR;
+	static char waiting_release = 0;
+
+	// Prior to version 2.1.1, whenever the button mapping called for Z being pressed
+	// on the classic controller, ZL and ZR were used (i.e. They were pushed down together
+	// on the virtual classic controller).
+	//
+	// But in Super Smash Bros Ultimate on the Switch through the 8BitDo GBros.,
+	// it has been observed that one cannot roll when both Z triggers are down. So starting
+	// with version 2.1.1, only ZR is used.
+	if (g_current_config.merge_zl_zr) {
+		buttons_zl_zr |= CPAD_BTN_ZL;
+	}
 
 	memset(dst, 0, sizeof(classic_pad_data));
 
@@ -317,7 +330,7 @@ void dataToClassic(const gamepad_data *src, classic_pad_data *dst, char first_re
 					if (src->gc.buttons & GC_BTN_B) { dst->buttons |= CPAD_BTN_B; }
 					if (src->gc.buttons & GC_BTN_X) { dst->buttons |= CPAD_BTN_X; }
 					if (src->gc.buttons & GC_BTN_Y) { dst->buttons |= CPAD_BTN_Y; }
-					if (src->gc.buttons & GC_BTN_Z) { dst->buttons |= CPAD_BTN_ZL|CPAD_BTN_ZR; }
+					if (src->gc.buttons & GC_BTN_Z) { dst->buttons |= buttons_zl_zr; }
 					if (src->gc.buttons & GC_BTN_L) { dst->buttons |= CPAD_BTN_TRIG_LEFT; }
 					if (src->gc.buttons & GC_BTN_R) { dst->buttons |= CPAD_BTN_TRIG_RIGHT; }
 					break;
@@ -459,6 +472,10 @@ void dataToClassic(const gamepad_data *src, classic_pad_data *dst, char first_re
 				chgMap(&g_current_config.g_n64_mapping_mode, MODE_F_ZERO_X);
 			} else if (IS_SIMULTANEOUS(src->n64.buttons,  N64_BTN_L|N64_BTN_R|N64_BTN_Z|N64_BTN_C_RIGHT)) {
 				chgMap(&g_current_config.g_n64_mapping_mode, MODE_YOSHI_STORY);
+			} else if (IS_SIMULTANEOUS(src->n64.buttons, N64_BTN_L|N64_BTN_R|N64_BTN_Z)) {
+				if (src->n64.y < -50) { // Stick Down
+					chgMap(&g_current_config.g_n64_mapping_mode, MODE_ODYSSEY);
+				}
 			}
 
 			// Curves
@@ -472,6 +489,18 @@ void dataToClassic(const gamepad_data *src, classic_pad_data *dst, char first_re
 					g_current_config.g_n64_curve_id = RLUT_V1_4;
 					sync_config();
 				}
+#if 0
+				// Toggle the old ZL+ZR behaviour
+				if (IS_SIMULTANEOUS(src->n64.buttons, N64_BTN_L|N64_BTN_R|N64_BTN_Z) && (src->n64.y < +50)) { // Up
+					if (!waiting_release) {
+						g_current_config.merge_zl_zr = !g_current_config.merge_zl_zr;
+						sync_config();
+						waiting_release = 1;
+					}
+				} else {
+					waiting_release = 0;
+				}
+#endif
 			}
 
 			if (src->n64.buttons & N64_BTN_A) { dst->buttons |= CPAD_BTN_A; }
@@ -491,7 +520,7 @@ void dataToClassic(const gamepad_data *src, classic_pad_data *dst, char first_re
 			{
 				case MODE_TEST:
 				case MODE_N64_STANDARD:
-					if (src->n64.buttons & N64_BTN_Z) { dst->buttons |= CPAD_BTN_ZL | CPAD_BTN_ZR; }
+					if (src->n64.buttons & N64_BTN_Z) { dst->buttons |= buttons_zl_zr; }
 					if (src->n64.buttons & N64_BTN_R) { dst->buttons |= CPAD_BTN_TRIG_RIGHT; }
 					if (src->n64.buttons & N64_BTN_L) { dst->buttons |= CPAD_BTN_TRIG_LEFT; }
 
@@ -506,7 +535,7 @@ void dataToClassic(const gamepad_data *src, classic_pad_data *dst, char first_re
 				case MODE_MARIOKART64:
 					if (src->n64.buttons & N64_BTN_Z) { dst->buttons |= CPAD_BTN_TRIG_LEFT; }
 					if (src->n64.buttons & N64_BTN_R) { dst->buttons |= CPAD_BTN_TRIG_RIGHT; }
-					if (src->n64.buttons & N64_BTN_L) { dst->buttons |= CPAD_BTN_ZL | CPAD_BTN_ZR; }
+					if (src->n64.buttons & N64_BTN_L) { dst->buttons |= buttons_zl_zr; }
 					break;
 				case MODE_OCARINA:
 					if (src->n64.buttons & N64_BTN_Z) { dst->buttons |= CPAD_BTN_TRIG_LEFT; }
@@ -515,13 +544,13 @@ void dataToClassic(const gamepad_data *src, classic_pad_data *dst, char first_re
 					break;
 				case MODE_SSMB:
 					if (src->n64.buttons & N64_BTN_L) { dst->buttons |= CPAD_BTN_DPAD_DOWN; }
-					if (src->n64.buttons & N64_BTN_R) { dst->buttons |= CPAD_BTN_ZL | CPAD_BTN_ZR; }
+					if (src->n64.buttons & N64_BTN_R) { dst->buttons |= buttons_zl_zr; }
 					if (src->n64.buttons & N64_BTN_Z) { dst->buttons |= CPAD_BTN_TRIG_LEFT | CPAD_BTN_TRIG_RIGHT; }
 					if (src->n64.buttons & N64_BTN_C_LEFT) { dst->buttons |= CPAD_BTN_Y; }
 					if (src->n64.buttons & N64_BTN_C_DOWN) { dst->buttons |= CPAD_BTN_X; }
 					break;
 				case MODE_SIN_AND_PUNISHMENT:
-					if (src->n64.buttons & N64_BTN_L) { dst->buttons |= CPAD_BTN_ZL | CPAD_BTN_ZR; }
+					if (src->n64.buttons & N64_BTN_L) { dst->buttons |= buttons_zl_zr; }
 					if (src->n64.buttons & N64_BTN_R) { dst->buttons |= CPAD_BTN_TRIG_RIGHT; }
 					if (src->n64.buttons & N64_BTN_Z) { dst->buttons |= CPAD_BTN_TRIG_LEFT; }
 					if (src->n64.buttons & N64_BTN_C_LEFT) { dst->buttons |= CPAD_BTN_Y; }
@@ -538,10 +567,10 @@ void dataToClassic(const gamepad_data *src, classic_pad_data *dst, char first_re
 					if (src->n64.buttons & N64_BTN_Z) { dst->buttons |= CPAD_BTN_TRIG_LEFT; }
 					if (src->n64.buttons & N64_BTN_C_DOWN) { dst->buttons |= CPAD_BTN_X; }
 					if (src->n64.buttons & N64_BTN_C_LEFT) { dst->buttons |= CPAD_BTN_Y; }
-					if (src->n64.buttons & N64_BTN_C_RIGHT) { dst->buttons |= CPAD_BTN_ZR | CPAD_BTN_ZL; }
+					if (src->n64.buttons & N64_BTN_C_RIGHT) { dst->buttons |= buttons_zl_zr; }
 					break;
 				case MODE_YOSHI_STORY: // Mapping 7
-					if (src->n64.buttons & N64_BTN_L) { dst->buttons |= CPAD_BTN_ZL | CPAD_BTN_ZR; }
+					if (src->n64.buttons & N64_BTN_L) { dst->buttons |= buttons_zl_zr; }
 					if (src->n64.buttons & N64_BTN_R) { dst->buttons |= CPAD_BTN_TRIG_RIGHT; }
 					if (src->n64.buttons & N64_BTN_Z) { dst->buttons |= CPAD_BTN_X | CPAD_BTN_Y; }
 					break;

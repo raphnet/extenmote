@@ -24,15 +24,19 @@ static struct eeprom_data_struct g_eeprom_data;
 
 static void eeprom_commit(void)
 {
+	eeprom_busy_wait();
 	eeprom_update_block(&g_eeprom_data, EEPROM_BASE_PTR, sizeof(struct eeprom_data_struct));
+	eeprom_busy_wait();
 }
 
 // return 1 if eeprom was blank
 static char eeprom_init(void)
 {
-	char *magic = "EXTENMOTE";
+	char *magic = "EXTENMOT2";
 
+	eeprom_busy_wait();
 	eeprom_read_block(&g_eeprom_data, EEPROM_BASE_PTR, sizeof(struct eeprom_data_struct));
+	eeprom_busy_wait();
 
 	/* Check for magic number */
 	if (memcmp(g_eeprom_data.magic, magic, EEPROM_MAGIC_SIZE)) {
@@ -46,7 +50,7 @@ static char eeprom_init(void)
 }
 
 struct eeprom_data_struct g_current_config = {
-	.magic = { 'E','X','T','E','N','M','O','T','E' },
+	.magic = { 'E','X','T','E','N','M','O','T','2' },
 	.g_n64_mapping_mode = MODE_N64_STANDARD,
 	.g_n64_curve_id = RLUT_V1_5,
 
@@ -54,6 +58,7 @@ struct eeprom_data_struct g_current_config = {
 
 	.g_snes_nes_mode = 0,
 	.g_snes_analog_dpad = 0,
+	.merge_zl_zr = 0,
 };
 
 void sync_config()
