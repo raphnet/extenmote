@@ -574,6 +574,23 @@ void dataToClassic(const gamepad_data *src, classic_pad_data *dst, char first_re
 					if (src->n64.buttons & N64_BTN_R) { dst->buttons |= CPAD_BTN_TRIG_RIGHT; }
 					if (src->n64.buttons & N64_BTN_Z) { dst->buttons |= CPAD_BTN_X | CPAD_BTN_Y; }
 					break;
+				case MODE_ODYSSEY: // Mapping 8
+					if (src->n64.buttons & N64_BTN_Z) { dst->buttons |= buttons_zl_zr; }
+					if (src->n64.buttons & N64_BTN_R) { dst->buttons |= CPAD_BTN_TRIG_RIGHT; }
+					if (src->n64.buttons & N64_BTN_L) { dst->buttons |= CPAD_BTN_TRIG_LEFT; }
+
+					// Undo the AB buttons
+					dst->buttons &= ~(CPAD_BTN_B|CPAD_BTN_A);
+
+					if (src->n64.buttons & N64_BTN_A) { dst->buttons |= CPAD_BTN_B; }
+					if (src->n64.buttons & N64_BTN_B) { dst->buttons |= CPAD_BTN_Y; }
+					if (src->n64.buttons & N64_BTN_C_LEFT) { dst->buttons |= CPAD_BTN_X; }
+					if (src->n64.buttons & N64_BTN_C_DOWN) { dst->buttons |= CPAD_BTN_A; }
+
+					// anything better to do with those?
+					if (src->n64.buttons & N64_BTN_C_UP) { dst->ry = C_DEFLECTION; }
+					if (src->n64.buttons & N64_BTN_C_RIGHT) { dst->rx = C_DEFLECTION; }
+					break;
 			}
 
 			if (g_current_config.g_n64_mapping_mode != MODE_TEST)
@@ -587,6 +604,10 @@ void dataToClassic(const gamepad_data *src, classic_pad_data *dst, char first_re
 						// mess with aiming!
 					case MODE_F_ZERO_X:
 						// In F-Zero, 3 of the C-stick directions are mapped to buttons.
+						break;
+
+					case MODE_ODYSSEY:
+						// all done above
 						break;
 
 					default:

@@ -44,6 +44,7 @@ void init_config(void);
 #define MODE_F_ZERO_X			6
 #define MODE_YOSHI_STORY		7
 #define MODE_TEST				8
+#define MODE_ODYSSEY			9
 
 #define MODE_GC_STANDARD		0
 #define MODE_GC_SNES			1
