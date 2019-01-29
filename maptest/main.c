@@ -150,6 +150,74 @@ static int wii_classic_displayer(int num_axes, short *axes, int num_buttons, sho
 	return 0;
 }
 
+static int wii_classic_displayer2(int num_axes, short *axes, int num_buttons, short *buttons)
+{
+	int i;
+	int disp_buttons = 16;
+	const char *btn_labels[16] = {
+		"Y......:", // 0
+		"B......:", // 1
+		"Minus..:", // 2
+		"Plus...:", // 3
+
+		"A......:", // 4
+		"X......:", // 5
+		"L......:", // 6
+		"R......:", // 7
+
+		"Zl.....:", // 8
+		"Zr.....:", // 9
+		"Home...:", // 10
+		".......:", // 11
+
+		"D-up...:", // 12
+		"D-dn...:", // 13
+		"D-lf...:", // 14
+		"D-rt...:", // 15
+	};
+	int disp_order[16] = {
+		4,1,5,0,
+		6,7,8,9,
+		12,13,14,15,
+		3,2,10,11
+	};
+
+	if (num_axes != 6) {
+		fprintf(stderr, "Unexpected number of axes (expected 6, got %d)\n", num_axes);
+		return -1;
+	}
+
+	if (num_buttons != 16) {
+		fprintf(stderr, "Unexpected number of buttons (expected 16, got %d)\n", num_buttons);
+		return -1;
+	}
+
+	printf("\033[0;0H");
+
+	printf(" - %s (Wii classic controller)\n", joyname);
+
+	printf("\n");
+
+	printf("Left stick  : %6d,%6d    %3s\n", axes[0], axes[1], axePairToName(axes[0],axes[1]));
+	printf("Right stick : %6d,%6d    %3s\n", axes[3], axes[4], axePairToName(axes[3],axes[4]));
+	printf("                             \n");
+
+	for (i=0; i<disp_buttons; i++) {
+		int d;
+
+		d = disp_order[i];
+
+		if (d >= num_buttons) {
+			break;
+		}
+
+		printButton(btn_labels[d], d, buttons);
+	}
+
+	return 0;
+}
+
+
 int main(int argc, char **argv)
 {
 	int fd;
@@ -206,7 +274,8 @@ reopen:
 				printf("Select displayer:\n");
 				printf("A - Generic (page mode)\n");
 				printf("B - Generic (event mode)\n");
-				printf("C - Mapping tester\n");
+				printf("C - Mapping tester (with old raphnet wusbmote)\n");
+				printf("D - Mapping tester (with wusbmote v2)\n");
 
 				switch(getchar())
 				{
@@ -224,6 +293,12 @@ reopen:
 					case 'c':
 						displayer = wii_classic_displayer;
 						break;
+
+					case 'D':
+					case 'd':
+						displayer = wii_classic_displayer2;
+						break;
+
 
 					default:
 						break;
