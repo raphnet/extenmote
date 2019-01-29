@@ -489,18 +489,20 @@ void dataToClassic(const gamepad_data *src, classic_pad_data *dst, char first_re
 					g_current_config.g_n64_curve_id = RLUT_V1_4;
 					sync_config();
 				}
-#if 0
+
 				// Toggle the old ZL+ZR behaviour
-				if (IS_SIMULTANEOUS(src->n64.buttons, N64_BTN_L|N64_BTN_R|N64_BTN_Z) && (src->n64.y < +50)) { // Up
-					if (!waiting_release) {
-						g_current_config.merge_zl_zr = !g_current_config.merge_zl_zr;
-						sync_config();
-						waiting_release = 1;
+				if (IS_SIMULTANEOUS(src->n64.buttons, N64_BTN_L|N64_BTN_R|N64_BTN_Z))
+				{
+					if (src->n64.y > +50) { // Stick Up
+						if (!waiting_release) {
+							g_current_config.merge_zl_zr = !g_current_config.merge_zl_zr;
+							sync_config();
+							waiting_release = 1;
+						}
 					}
 				} else {
 					waiting_release = 0;
 				}
-#endif
 			}
 
 			if (src->n64.buttons & N64_BTN_A) { dst->buttons |= CPAD_BTN_A; }
