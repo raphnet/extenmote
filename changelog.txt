@@ -1,3 +1,9 @@
+-v2.1.1
+ - Add a new button mapping. (Enabled with L+R+Z+Joystick_down)
+ - Improve joystick analog range in "high res" mode.
+ - N64: ZL and ZR are not longer tied. By default, only ZL is pushed. The old
+ combined behavior can be toggled with L+R+Z+Joystick_up.
+
 -v2.1.0
  - Add new classic controller reporting modes (Fixes the NES Classic Edition)
 

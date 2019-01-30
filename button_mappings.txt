@@ -23,22 +23,22 @@ Special:
 
 *** N64 ***
 
-| N64       | Mapping 0  | Mapping 1  | Mapping 2  | Mapping 3  | Mapping 4  | Mapping 5  | Mapping6  | Mapping 7  |
-+-----------+------------+------------+------------+------------+------------+------------+-----------+------------+
-| A         | A          | A          | A          | A          | A          | A          | A         | A          |
-| B         | B          | B          | B          | B          | B          | B          | B         | B          |
-| Start     | +          | +          | +          | +          | +          | +          | +         | +          |
-| L         | L          | ZL + ZR    | D-Pad down | D-Pad down | ZL + ZR    | L          | D-right   | ZL + ZR    |
-| R         | R          | R          | R          | ZL + ZR    | R          | R          | R         | R          |
-| Z         | ZR + ZL    | L          | L          | L + R      | L          | L          | L         | X + Y      |
-| D-up      | D-up       | D-up       | D-up       | D-up       | D-up       | D-up       | D-up      | D-up       |
-| D-down    | D-down     | D-down     | D-down     | D-down     | D-down     | D-down     | D-down    | D-down     |
-| D-left    | D-left     | D-left     | D-left     | D-left     | D-left     | D-left     | D-left    | D-left     |
-| D-right   | D-right    | D-right    | D-right    | D-right    | D-right    | D-right    | D-right   | D-right    |
-| C-up      | C-up       | C-up       | C-up       | C-up       | N/A        | C-up       | N/A       | C-up       |
-| C-down    | C-down     | C-down     | C-down     | C-down + X | N/A        | C-down     | X         | C-down     |
-| C-left    | C-left     | C-left     | C-left     | C-left + Y | Y          | C-left     | Y         | C-left     |
-| C-right   | C-right    | C-right    | C-right    | C-right    | X          | C-right    | ZL + ZR   | C-right    |
+| N64       | Mapping 0  | Mapping 1  | Mapping 2  | Mapping 3  | Mapping 4  | Mapping 5  | Mapping6  | Mapping 7  | Mapping 8  |
++-----------+------------+------------+------------+------------+------------+------------+-----------+------------+------------+
+| A         | A          | A          | A          | A          | A          | A          | A         | A          | B
+| B         | B          | B          | B          | B          | B          | B          | B         | B          | Y
+| Start     | +          | +          | +          | +          | +          | +          | +         | +          | +
+| L         | L          | Zr         | D-Pad down | D-Pad down | Zr         | L          | D-right   | Zr         | L
+| R         | R          | R          | R          | Zr         | R          | R          | R         | R          | R
+| Z         | Zr         | L          | L          | L + R      | L          | L          | L         | X + Y      | Zr
+| D-up      | D-up       | D-up       | D-up       | D-up       | D-up       | D-up       | D-up      | D-up       | D-up
+| D-down    | D-down     | D-down     | D-down     | D-down     | D-down     | D-down     | D-down    | D-down     | D-down
+| D-left    | D-left     | D-left     | D-left     | D-left     | D-left     | D-left     | D-left    | D-left     | D-left
+| D-right   | D-right    | D-right    | D-right    | D-right    | D-right    | D-right    | D-right   | D-right    | D-right
+| C-up      | C-up       | C-up       | C-up       | C-up       | N/A        | C-up       | N/A       | C-up       | C-Up
+| C-down    | C-down     | C-down     | C-down     | C-down + X | N/A        | C-down     | X         | C-down     | A
+| C-left    | C-left     | C-left     | C-left     | C-left + Y | Y          | C-left     | Y         | C-left     | X
+| C-right   | C-right    | C-right    | C-right    | C-right    | X          | C-right    | ZL + ZR   | C-right    | C-Right
 
 |  Name    | Activation     | Games                                                                                |
 +----------+----------------+--------------------------------------------------------------------------------------+
@@ -50,9 +50,20 @@ Mapping 4  | L+R+Z+C-up     | Sin and punishment.
 Mapping 5  | L+R+Z+C-down   | Ogre Battle 64, 1080° Snowboarding, Pokemon snap, Starfox 64
 Mapping 6  | L+R+Z+C-left   | F-Zero X
 Mapping 7  | L+R+Z+C-right  | Yoshi's story
+Mapping 8  | L+R+Z+Joy-down | Mario Odyssey
 
 Special:
  - Disabling mapping combos: Hold Start when connecting the N64 controller (or powering up the wiimote)
+
+ZL + ZR:
+Before firmware version 2.1.1, ZL and ZR were tied together. Now only Zr is used. For instance, if using mapping 0,
+the N64 Z button now only controls Zr.
+
+The old behavior of tying Zl and Zr together can be toggled with: L+R+Z+Joystick_down. (In other words, press and hold
+Z, L and R, then point the N64 joystick away from you)
+
+Home button:
+Triple-clicking the start button will trigger the home button. (Version 1.9.5 and up)
 
 
 *** GAMECUBE ***
