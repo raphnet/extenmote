@@ -38,7 +38,7 @@ Special:
 | C-up      | C-up       | C-up       | C-up       | C-up       | N/A        | C-up       | N/A       | C-up       | C-Up
 | C-down    | C-down     | C-down     | C-down     | C-down + X | N/A        | C-down     | X         | C-down     | A
 | C-left    | C-left     | C-left     | C-left     | C-left + Y | Y          | C-left     | Y         | C-left     | X
-| C-right   | C-right    | C-right    | C-right    | C-right    | X          | C-right    | ZL + ZR   | C-right    | C-Right
+| C-right   | C-right    | C-right    | C-right    | C-right    | X          | C-right    | Zr        | C-right    | C-Right
 
 |  Name    | Activation     | Games                                                                                |
 +----------+----------------+--------------------------------------------------------------------------------------+
