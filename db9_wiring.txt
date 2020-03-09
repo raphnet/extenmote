@@ -1,0 +1,12 @@
+
+DB9 pin     IO Port     Function
+-----------------------------------------
+1           PB0			Up / Up / Z
+2           PB1         Down / Down / Y
+3           PB2         Left / 0 / X
+4           PB3         Right / 0
+5           +5V
+6           PC0         B / A
+7           PC2         SELECT
+8           GND
+9           PC1         C / Start
