@@ -84,14 +84,15 @@ static void hwInit(void)
 	{
 		/* PORTC
 		 *
-		 * 0: SNES/NES CLK 		out1
-		 * 1: SNES/NES LATCH	out1
-		 * 2: SNES/NES DATA		in-pu
+		 * #  Signal			Direction/level
+		 * 7: N/A				Out 0
+		 * 6: N/A				Out 0
+		 * 5: SCL (io)			In + pull-up
+		 * 4: SDA (io)			In + upll-up
 		 * 3: N64/Gamecube IO	in-pu
-		 * 4: SDA (io)
-		 * 5: SCL (io)
-		 * 6: N/A
-		 * 7: N/A
+		 * 2: SNES/NES DATA		in-pu
+		 * 1: SNES/NES LATCH	out1
+		 * 0: SNES/NES CLK 		out1
 		 *
 		 * [*] Needs an external 1.5k pullup.
 		 *
