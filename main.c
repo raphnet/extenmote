@@ -76,9 +76,14 @@ static void hwInit(void)
 
 	_delay_ms(1);
 
+#ifdef DB9_V2
+	db9_mode = 1;
+#else
 	if (!(PIND & 0x40)) {
 		db9_mode = 1;
 	}
+#endif
+
 
 	if (!db9_mode)
 	{

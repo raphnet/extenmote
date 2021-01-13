@@ -38,6 +38,47 @@
 
 static unsigned char cur_id = CTL_ID_GENESIS3;
 
+#ifdef DB9_V2
+
+static inline unsigned char SAMPLE()
+{
+	unsigned char c;
+	unsigned char b;
+	unsigned char res;
+
+	c = PINC;
+	b = PINB;
+
+	/* Target bits in 'res' are:
+	 *
+	 * 0: Up/Up/Z				DB9 pin 1
+	 * 1: Down/Down/Y			DB9 pin 2
+	 * 2: Left/0/X				DB9 pin 3
+	 * 3: Right/0				DB9 pin 4
+	 * 4: BtnB/BtnA				DB9 pin 6
+	 * 5: Btnc/BtnStart			DB9 pin 9
+	 * 6: Extra button (for direct wiring)
+	 * 7:
+	 */
+
+	res = 0;
+
+	if (b & 0x04) res |= 0x01; // Up
+	if (b & 0x10) res |= 0x02; // Down
+	if (c & 0x02) res |= 0x04; // Left
+	if (c & 0x08) res |= 0x08; // Right
+	if (b & 0x08) res |= 0x10; // B/A
+	if (c & 0x04) res |= 0x20; // C/Start
+
+	return res;
+}
+
+#define SELECT_PORT		PORTB
+#define SELECT_BIT		PORTB5
+#define SELECT_DDR		DDRB
+
+#else
+
 static inline unsigned char SAMPLE()
 {
 	unsigned char c;
@@ -68,6 +109,8 @@ static inline unsigned char SAMPLE()
 #define SELECT_PORT		PORTC
 #define SELECT_BIT		PORTC2
 #define SELECT_DDR		DDRC
+
+#endif
 
 #define SET_SELECT()	SELECT_PORT |= 1<<SELECT_BIT;
 #define CLR_SELECT()	SELECT_PORT &= ~(1<<SELECT_BIT);
@@ -164,6 +207,12 @@ static char db9Init(void)
 	SELECT_DDR |= (1<<SELECT_BIT);
 	SELECT_PORT |= (1<<SELECT_BIT);
 
+#ifdef DB9_V2
+	DDRB &= ~(0x04 | 0x10 | 0x08);
+	PORTB |= (0x04 | 0x10 | 0x08);
+	DDRC &= ~(0x02 | 0x08 | 0x04);
+	PORTC |= (0x02 | 0x08 | 0x04);
+#else
 	// Directions as input with pull-up
 	DDRB &= 0xF0;
 	PORTB |= 0x0F;
@@ -171,6 +220,7 @@ static char db9Init(void)
 	// Buttons B/A and C/Start
 	DDRC &= 0xFC;
 	PORTC |= 0x03;
+#endif
 
 	readController(bits);
 
