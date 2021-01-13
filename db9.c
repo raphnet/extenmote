@@ -145,15 +145,15 @@ static void readController(unsigned char bits[READ_CONTROLLER_SIZE])
 	 *
 	 */
 
-	DDRC |= 0x08;
-	PORTC |= 0x08;
+//	DDRC |= 0x08;
+//	PORTC |= 0x08;
 
 	/* 1 */
 	SET_SELECT();
 	_delay_us(20);
 	a = SAMPLE();
 
-	PORTC &= ~0x08;
+//	PORTC &= ~0x08;
 
 	if (cur_id == CTL_ID_ATARI ||
 		cur_id == CTL_ID_SMS) {
