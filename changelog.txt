@@ -1,3 +1,8 @@
+-v2.2.1 - 2022-07-14
+ - Add an option for Gamecube controllers where the L/R buttons are triggered
+   early using the analog reading from the L/R sliders. This option is toggled
+   with A+B+X+Y+L and is remembered between power cycles.
+
 -v2.2.0 - 2020-01-13
  - Add support for a new DB9 (Genesis/SMS) to Wiimote adapter (v2). Basically
  the same as before, only using different IO pins.

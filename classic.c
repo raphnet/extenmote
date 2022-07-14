@@ -436,6 +436,16 @@ void dataToClassic(const gamepad_data *src, classic_pad_data *dst, char first_re
 				if (src->gc.cy < -64) {
 					dst->buttons |= CPAD_BTN_HOME;
 				}*/
+			} else if (IS_SIMULTANEOUS(src->gc.buttons, GC_BTN_A|GC_BTN_B|GC_BTN_X|GC_BTN_Y|GC_BTN_L)) {
+				if (!waiting_release) {
+					g_current_config.easy_triggers = !g_current_config.easy_triggers;
+					sync_config();
+					waiting_release = 1;
+				}
+			} else {
+				if (!IS_SIMULTANEOUS(src->gc.buttons, GC_BTN_A|GC_BTN_B|GC_BTN_X|GC_BTN_Y)) {
+					waiting_release = 0;
+				}
 			}
 
 			if (isTripleClick(src->gc.buttons & GC_BTN_START)) {

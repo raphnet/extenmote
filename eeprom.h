@@ -28,6 +28,7 @@ struct eeprom_data_struct {
 	unsigned char g_snes_nes_mode;
 	unsigned char g_snes_analog_dpad;
 	unsigned char merge_zl_zr;
+	unsigned char easy_triggers;
 };
 
 extern struct eeprom_data_struct g_current_config;

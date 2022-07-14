@@ -26,6 +26,7 @@
 #include "gamepads.h"
 #include "gamecube.h"
 #include "gcn64_protocol.h"
+#include "eeprom.h"
 
 /*********** prototypes *************/
 static char gamecubeInit(void);
@@ -143,6 +144,16 @@ void gc_decodeAnswer()
 	for (tmp=0,i=0; i<8; i++) // Right btn value
 		tmp |= gcn64_workbuf[i+56] ? (0x80>>i) : 0;	
 	last_built_report.gc.rt = tmp;
+
+	if (g_current_config.easy_triggers) {
+#define EARLY_LR_THRES 50
+		if ((unsigned char)last_built_report.gc.lt > EARLY_LR_THRES) {
+			last_built_report.gc.buttons |= GC_BTN_L;
+		}
+		if ((unsigned char)last_built_report.gc.rt > EARLY_LR_THRES) {
+			last_built_report.gc.buttons |= GC_BTN_R;
+		}
+	}
 
 	// Copy all the data as-is for the raw field
 	memset(last_built_report.gc.raw_data, 0, GC_RAW_SIZE);
