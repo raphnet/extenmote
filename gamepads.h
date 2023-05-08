@@ -13,6 +13,10 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  Changes pertaining to SNES Mouse and NES lightgun Copyright (C) 2023 Akerasoft
+ *  The author may be contacted at robert.kolski@akerasoft.com
+ *
  */
 #ifndef _gamepad_h__
 #define _gamepad_h__
@@ -25,9 +29,17 @@
 #define PAD_TYPE_GAMECUBE	5
 #define PAD_TYPE_MD			6
 #define PAD_TYPE_SMS		7
+// (C) Akerasoft 2023 -- BEGIN --
+#define PAD_TYPE_GUN		8
+#define PAD_TYPE_MOUSE		9
+// (C) Akerasoft 2023 -- END --
 
 #define NES_RAW_SIZE		1
 #define SNES_RAW_SIZE		2
+// (C) Akerasoft 2023 -- BEGIN --
+#define MOUSE_RAW_SIZE		4
+#define GUN_RAW_SIZE		1
+// (C) Akerasoft 2023 -- END --
 #define N64_RAW_SIZE		4
 #define GC_RAW_SIZE			8
 #define DB9_RAW_SIZE		2
@@ -90,6 +102,26 @@ typedef struct _snes_pad_data {
 #define SNES_BTN_L			0x2000
 #define SNES_BTN_R			0x1000
 
+// (C) Akerasoft 2023 -- BEGIN --
+typedef struct _mouse_pad_data {
+	unsigned char pad_type; // PAD_TYPE_MOUSE
+	unsigned short buttons;
+	unsigned char raw_data[MOUSE_RAW_SIZE];
+} mouse_pad_data;
+
+#define MOUSE_BTN_R			0x8000
+#define MOUSE_BTN_L			0x4000
+#define MOUSE_SENSITIVITY           0x3000
+
+typedef struct _gun_pad_data {
+	unsigned char pad_type; // PAD_TYPE_GUN
+	unsigned short buttons;
+	unsigned char raw_data[GUN_RAW_SIZE];
+} gun_pad_data;
+
+#define GUN_BTN_TRIGGER			0x0080
+#define GUN_BTN_SENSOR			0x0040
+// (C) Akerasoft 2023 -- END --
 
 typedef struct _nes_pad_data {
 	unsigned char pad_type; // PAD_TYPE_NES
@@ -190,6 +222,10 @@ typedef struct _gamepad_data {
 		unsigned char pad_type; // PAD_TYPE_*
 		classic_pad_data classic;
 		snes_pad_data snes;
+// (C) Akerasoft 2023 -- BEGIN --
+		mouse_pad_data mouse;
+		gun_pad_data gun;
+// (C) Akerasoft 2023 -- END --
 		nes_pad_data nes;
 		n64_pad_data n64;
 		gc_pad_data gc;

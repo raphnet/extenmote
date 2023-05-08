@@ -13,6 +13,9 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  Changes pertaining to SNES Mouse and NES lightgun  Copyright (C) 2023 Akerasoft
+ *  The author may be contacted at robert.kolski@akerasoft.com
  */
 #include <string.h>
 
@@ -55,6 +58,10 @@
  *   'G' | 'C'    Gamecube controller
  *   'S' | 'F'    SNES
  *   'F' | 'C'    NES
+ * (C) Akerasoft 2023 -- BEGIN --
+ *   'G' | 'N'    NES Lightgun / Zapper
+ *   'M' | 'S'    SNES Mouse
+ * (C) Akerasoft 2023 -- END --
  *
  * Writing at byte 6 might one day control the rumble motor. Rumbles on when non-zero.
  */
@@ -288,6 +295,26 @@ void dataToClassic(const gamepad_data *src, classic_pad_data *dst, char first_re
 				dst->rt = 0xff;
 			}
 			break;
+
+// (C) Akerasoft 2023 -- BEGIN --
+		case PAD_TYPE_MOUSE:
+			dst->controller_id[0] = 'M';
+			dst->controller_id[1] = 'S';
+			memcpy(dst->controller_raw_data, src->snes.raw_data, MOUSE_RAW_SIZE);
+
+			if (src->snes.buttons & MOUSE_BTN_L) { dst->buttons |= CPAD_BTN_X; }
+			if (src->snes.buttons & MOUSE_BTN_R) { dst->buttons |= CPAD_BTN_A; }
+			break;
+
+		case PAD_TYPE_GUN:
+			dst->controller_id[0] = 'G';
+			dst->controller_id[1] = 'N';
+			memcpy(dst->controller_raw_data, src->gun.raw_data, GUN_RAW_SIZE);
+
+			if (src->snes.buttons & GUN_BTN_TRIGGER) { dst->buttons |= CPAD_BTN_B; }
+			if (src->snes.buttons & GUN_BTN_SENSOR) { dst->buttons |= CPAD_BTN_A; }
+			break;
+// (C) Akerasoft 2023 -- END --
 
 		case PAD_TYPE_NES:
 //			if (first_read && src->nes.buttons & NES_BTN_START) {

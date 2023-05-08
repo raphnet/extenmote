@@ -13,6 +13,10 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  Changes pertaining to SNES Mouse and NES lightgun  Copyright (C) 2023 Akerasoft
+ *  The author may be contacted at robert.kolski@akerasoft.com
+ *
  */
 
 #include <avr/io.h>
@@ -66,14 +70,20 @@ static void hwInit(void)
 	/* PORTD
 	 * 0: out0
 	 * 1: out0
-	 * 2: out0
-	 * 3: out0
+// (C) Akerasoft 2023 - proposal PORT D2 and D3 are for NES Zapper.  When no other controller found
+//                      use NES Zapper / lightgun in the SNES.c file.
+	 * 2: in
+	 * 3: in
+// (C) Akerasoft 2023 - END
 	 * 4: out1 // Tied to VCC on Multiuse PCB2 for routing reasons
 	 * 5: out0
 	 * 6: in-pu // Pulled to GND on mutluse db9 v3. Wired to VCC on multiuse PCB2.
 	 * 7: out0
 	 */
-	PORTD = 0x60;
+// (C) Akerasoft 2023 - proposal PORT D2 and D3 are for NES Zapper.
+	PORTD = 0x6C;
+// (C) Akerasoft 2023 - END
+
 	DDRD = 0xbf;
 
 	_delay_ms(1);
@@ -393,6 +403,18 @@ int main(void)
 					memcpy(raw, lastReadData.nes.raw_data, sizeof(lastReadData.nes.raw_data));
 					wm_newaction(raw, sizeof(lastReadData.nes.raw_data));
 					break;
+
+// (C) Akerasoft 2023 - BEGIN
+				case PAD_TYPE_GUN:
+					memcpy(raw, lastReadData.gun.raw_data, sizeof(lastReadData.gun.raw_data));
+					wm_newaction(raw, sizeof(lastReadData.gun.raw_data));
+					break;
+
+				case PAD_TYPE_MOUSE:
+					memcpy(raw, lastReadData.mouse.raw_data, sizeof(lastReadData.mouse.raw_data));
+					wm_newaction(raw, sizeof(lastReadData.mouse.raw_data));
+					break;
+// (C) Akerasoft 2023 - END
 			}
 
 			// TODO : Controller specific report format

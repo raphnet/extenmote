@@ -21,6 +21,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  * The author may be contacted at raph@raphnet.net
+ *
+ *  Changes pertaining to SNES Mouse and NES lightgun  Copyright (C) 2023 Akerasoft
+ *  The author may be contacted at robert.kolski@akerasoft.com
  */
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -30,7 +33,14 @@
 #include "gamepads.h"
 #include "snes.h"
 
-#define GAMEPAD_BYTES	2
+// (C) Akerasoft 2023 -- BEGIN --
+// to support the mouse it has to be 4 bytes
+// 1 byte for NES
+// 1 byte for GUN
+// 2 bytes for SNES
+// 4 bytes for Mouse
+#define GAMEPAD_BYTES	4
+// (C) Akerasoft 2023 -- END --
 
 /******** IO port definitions **************/
 #define SNES_LATCH_DDR	DDRC
@@ -65,6 +75,10 @@ static unsigned char last_read_controller_bytes[GAMEPAD_BYTES];
 static unsigned char last_reported_controller_bytes[GAMEPAD_BYTES];
 
 static char nes_mode = 0;
+// (C) Akerasoft 2023 -- BEGIN --
+static char gun_mode = 0;
+static char mouse_mode = 0;
+// (C) Akerasoft 2023 -- END --
 
 static char snesInit(void)
 {
@@ -115,7 +129,35 @@ static char snesInit(void)
         13              none (always high)
         14              none (always high)
         15              none (always high)
-        16              none (always high)
+
+
+// (C) Akerasoft 2023 -- BEGIN --
+// Though this information came from:
+// https://www.repairfaq.org/REPAIR/F_SNES.html
+// So Rafael Assenat is the copyright holder anyway for this section
+
+        16              none (always high) (SNES controller present)
+
+        16              low - mouse present
+        17              Y direction (0=up, 1=down)
+        18              Y motion bit 6
+        19              Y motion bit 5
+        20              Y motion bit 4
+        21              Y motion bit 3
+        22              Y motion bit 2
+        23              Y motion bit 1
+        24              Y motion bit 0
+        25              X direction (0=left, 1=right)
+        26              X motion bit 6
+        27              X motion bit 5
+        28              X motion bit 4
+        29              X motion bit 3
+        30              X motion bit 2
+        31              X motion bit 1
+        32              X motion bit 0
+
+// (C) Akerasoft 2023 -- END --
+
  *
  */
 
@@ -123,6 +165,15 @@ static char snesUpdate(void)
 {
 	int i;
 	unsigned char tmp=0;
+
+// (C) Akerasoft 2023 -- BEGIN --
+	if (gun_mode)
+	{
+		tmp = (PIND & 0x0C) << 4;
+		last_read_controller_bytes[0] = tmp;
+		return 0;
+	}
+// (C) Akerasoft 2023 -- END --
 
 	SNES_LATCH_HIGH();
 	_delay_us(12);
@@ -154,6 +205,34 @@ static char snesUpdate(void)
 		SNES_CLOCK_HIGH();
 	}
 	last_read_controller_bytes[1] = tmp;
+// (C) Akerasoft 2023 -- BEGIN --
+	for (i=0; i<8; i++)
+	{
+		_delay_us(6);
+
+		SNES_CLOCK_LOW();
+
+		tmp <<= 1;
+		if (!SNES_GET_DATA()) { tmp |= 0x01; }
+
+		_delay_us(6);
+		SNES_CLOCK_HIGH();
+	}
+	last_read_controller_bytes[2] = tmp;
+	for (i=0; i<8; i++)
+	{
+		_delay_us(6);
+
+		SNES_CLOCK_LOW();
+
+		tmp <<= 1;
+		if (!SNES_GET_DATA()) { tmp |= 0x01; }
+
+		_delay_us(6);
+		SNES_CLOCK_HIGH();
+	}
+	last_read_controller_bytes[3] = tmp;
+// (C) Akerasoft 2023 -- END --
 
 	return 0;
 }
@@ -166,23 +245,45 @@ static char snesChanged(void)
 
 static void snesGetReport(gamepad_data *dst)
 {
-	unsigned char h, l;
+	unsigned char h, l, d2, d3;
 
 	if (dst != NULL)
 	{
 		l = last_read_controller_bytes[0];
 		h = last_read_controller_bytes[1];
-
+// (C) Akerasoft 2023 -- BEGIN --
+		d2 = last_read_controller_bytes[2];
+		d3 = last_read_controller_bytes[3];
+// (C) Akerasoft 2023 -- END --
 
 		// The 4 last bits are always high if an SNES controller
 		// is connected. With a NES controller, they are low.
 		// (High on the wire is a 0 here due to the snesUpdate() implementation)
 		//
-		if ((h & 0x0f) == 0x0f) {
-			nes_mode = 1;
-		} else {
+
+// (C) Akerasoft 2023 -- BEGIN --
+		// The 3 just before last bits are high for the SNES mouse
+		// but the very last bit in byte 2 is low.  So 0x1 is the expected value here
+		if (l == 0x00 && h == 0x00 && d2 == 0x00 && d3 == 0x00)
+		{
+			gun_mode = 1;
 			nes_mode = 0;
+			mouse_mode = 0;
+		} else if ((h & 0x0f) == 0x0f) {
+			nes_mode = 1;
+			gun_mode = 0;
+			mouse_mode = 0;
+		} else if ((h & 0x0f) == 0x01) {
+			mouse_mode = 1;
+			gun_mode = 0;
+			nes_mode = 0;
+		} else {
+			// SNES Controller
+			nes_mode = 0;
+			mouse_mode = 0;
+			gun_mode = 0;
 		}
+// (C) Akerasoft 2023 -- END --
 
 		if (nes_mode) {
 			// Nes controllers send the data in this order:
@@ -190,6 +291,20 @@ static void snesGetReport(gamepad_data *dst)
 			dst->nes.pad_type = PAD_TYPE_NES;
 			dst->nes.buttons = l;
 			dst->nes.raw_data[0] = l;
+// (C) Akerasoft 2023 -- BEGIN --
+		} else if (mouse_mode) {
+			dst->mouse.pad_type = PAD_TYPE_MOUSE;
+			dst->mouse.buttons = l;
+			dst->mouse.buttons |= h<<8;
+			dst->mouse.raw_data[0] = l;
+			dst->mouse.raw_data[1] = h;
+			dst->mouse.raw_data[2] = d2;
+			dst->mouse.raw_data[3] = d3;
+		} else if (gun_mode) {
+			dst->gun.pad_type = PAD_TYPE_GUN;
+			dst->gun.buttons = l;
+			dst->gun.raw_data[0] = l;
+// (C) Akerasoft 2023 -- END --
 		} else {
 			dst->nes.pad_type = PAD_TYPE_SNES;
 			dst->snes.buttons = l;
