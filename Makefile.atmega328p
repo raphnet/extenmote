@@ -2,18 +2,19 @@ CC=avr-gcc
 AS=$(CC)
 LD=$(CC)
 
-PROGNAME=atmega168_extenmote
+PROGNAME=atmega328p_extenmote
 OBJDIR=objs-$(PROGNAME)
-CPU=atmega168
-CFLAGS=-Wall -mmcu=$(CPU) -DF_CPU=12000000L -Os -DWITH_SNES -DWITH_N64 -DWITH_GAMECUBE -DWITH_EEPROM -DWITH_DB9
-#CFLAGS=-Wall -mmcu=$(CPU) -DF_CPU=12000000L -Os -DWITH_SNES -DWITH_EEPROM
+CPU=atmega328p
+CFLAGS=-Wall -mmcu=$(CPU) -DF_CPU=16000000L -Os -DWITH_SNES -DWITH_N64 -DWITH_GAMECUBE -DWITH_EEPROM -DWITH_DB9
 LDFLAGS=-mmcu=$(CPU) -Wl,-Map=$(PROGNAME).map
 HEXFILE=$(PROGNAME).hex
-AVRDUDE=avrdude -p m168 -P usb -c avrispmkII
+AVRDUDE=avrdude -p m328p -P com5 -c avrisp -b 19200
 
 #  -  -  -  -  -  BOOTSZ1  BOOTSZ0  BOOTRST
 #  0  0  0  0  0     0        0        1
-EFUSE=0x01
+#  1  1  1  1  1     0        0        1
+#EFUSE=0x01
+EFUSE=0xF9
 
 # RSTDISBL  DWEN  SPIEN   WDTON  EESAVE  BODLEVEL2  BODLEVEL1  BODLEVEL0
 #    1        1      0      1      1         1          1          1
